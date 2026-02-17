@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: workshop
+spec:
+  selector:
+    app: backend
+  ports:
+  - port: 3500
+    protocol: TCP
+    
+# ..........................................
+
+# Customer = Someone who wants to use your app
+
+# Restaurant front desk = Service in Kubernetes
+
+# Door/Port = port in the Service — where the customer “knocks”
+
+# Chef/Kitchen = Pod/container that actually does the work
+
+# Kitchen listening spot/Target Port = targetPort — where the Pod receives traffic
+
+# # example 
+
+# if customer wants to access the resturant menu so he has to connect with port and chef can get order on target port
+
+
+## another example...
+
+# If a customer wants to see the menu or place an order, he knocks on the Service port (port). The chef receives the order at the targetPort (container port).

@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  namespace: workshop
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      name: backend-pod
+      namespace: workshop
+      labels:
+        app: backend
+    spec:
+      imagePullSecrets:
+      - name: ecr-registry-secret
+      containers:
+      - name: my-backend-container
+        image: 407622020962.dkr.ecr.us-east-1.amazonaws.com/backend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3500
+        env:
+        - name: MONGO_CONN
+          value: mongodb://$(MONGO_INITDB_ROOT_USERNAME):$(MONGO_INITDB_ROOT_PASSWORD)@mongodb-svc:27017/todo?authSource=admin
+
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: username
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: password
+          
+        resources:
+          requests:
+            cpu: 250m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        livenessProbe:
+          httpGet:
+            path: /ok
+            port: 3500
+          initialDelaySeconds: 20
+          periodSeconds: 15
+          timeoutSeconds: 5   
+          failureThreshold: 3
+        readinessProbe: # it checks if the container is ready to serve traffic
+          httpGet:
+            path: /ok
+            port: 3500
+          initialDelaySeconds: 30 # it waits for 30 seconds after the container starts before performing the first readiness check
+          periodSeconds: 15  # it checks every 15 seconds
+          successThreshold: 1 # if the container passes 1 consecutive readiness check, it is considered ready to serve traffic

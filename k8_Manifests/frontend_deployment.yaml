@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  namespace: workshop
+spec:
+  replicas: 2  #  mtlb replicas 2 ne te pods v 2 honge
+  strategy:
+    type: RollingUpdate  
+    rollingUpdate:    # it updates the pod matlb meri deployment v1 image te chal rhi hai but mai image update krni (image v2) a so i will use rolling update strategy to update the image without downtime
+      maxSurge: 1      # eh pod houga image v2 da ,  mtlb total 3 pod honge  2 v1 de te ik v2 da  jdo v2 pod bngya udho v1 da ik pod down krdu te  total 2 pod honge 1 v1 da te 1v2 da
+      maxUnavailable: 25% # eh ik pod down krduga v1 image da te ohdi jga v2 da pod bnadu ga 
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      name: frontend-pod
+      namespace: workshop
+      labels:
+        app: frontend
+    spec:
+      imagePullSecrets:
+      - name: ecr-registry-secret
+      containers:
+      - name: my-frontend-container
+        image: <Image>
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: 200m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
+        livenessProbe:
+          httpGet:      #Kubernetes sends an HTTP GET request to / on port 3000 to check if the container is alive
+            path: /
+            port: 3000
+          initialDelaySeconds: 20   #firstly it waits for 20 seconds after the container starts
+          periodSeconds: 15      # then it checks every 15 seconds
+          timeoutSeconds: 5    # if the container does not respond within 5 seconds, it is considered a failure
+          failureThreshold: 3  # if the container fails 3 consecutive liveness checks, it will be restart the container
+      
