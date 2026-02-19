@@ -4,7 +4,7 @@ metadata:
   name: frontend-deployment
   namespace: workshop
 spec:
-  replicas: 2  #  mtlb replicas 2 ne te pods v 2 honge
+  replicas: 1  #  mtlb replicas 2 ne te pods v 2 honge
   strategy:
     type: RollingUpdate  
     rollingUpdate:    # it updates the pod matlb meri deployment v1 image te chal rhi hai but mai image update krni (image v2) a so i will use rolling update strategy to update the image without downtime
@@ -24,17 +24,17 @@ spec:
       - name: ecr-registry-secret
       containers:
       - name: my-frontend-container
-        image: <Image>
+        image: public.ecr.aws/e9y4v9g0/3-tier-frontend:latest 
         imagePullPolicy: Always
         ports:
         - containerPort: 3000
         resources:
           requests:
-            cpu: 200m
-            memory: 128Mi
+            cpu: 25m
+            memory: 64Mi
           limits:
-            cpu: 500m
-            memory: 256Mi
+            cpu: 50m
+            memory: 128Mi
         livenessProbe:
           httpGet:      #Kubernetes sends an HTTP GET request to / on port 3000 to check if the container is alive
             path: /

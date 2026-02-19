@@ -8,9 +8,9 @@ metadata:
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
 spec:
+  ingressClassName: alb
   rules:
-  - host: <Host>
-    http:
+  - http:
       paths:
       - pathType: Prefix
         path: "/api"
@@ -26,3 +26,7 @@ spec:
             name: frontend-service
             port: 
               number: 3000
+
+
+# kubectl get ingress -n workshop
+

@@ -4,7 +4,7 @@ metadata:
   name: backend-deployment
   namespace: workshop
 spec:
-  replicas: 2
+  replicas: 1
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -24,7 +24,7 @@ spec:
       - name: ecr-registry-secret
       containers:
       - name: my-backend-container
-        image: 407622020962.dkr.ecr.us-east-1.amazonaws.com/backend:latest
+        image: public.ecr.aws/e9y4v9g0/3-tier-backend:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 3500
@@ -45,11 +45,11 @@ spec:
           
         resources:
           requests:
-            cpu: 250m
-            memory: 256Mi
+            cpu: 25m
+            memory: 32Mi
           limits:
-            cpu: 500m
-            memory: 512Mi
+            cpu: 50m
+            memory: 64Mi
         livenessProbe:
           httpGet:
             path: /ok
