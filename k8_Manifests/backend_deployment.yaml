@@ -4,7 +4,7 @@ metadata:
   name: backend-deployment
   namespace: workshop
 spec:
-  replicas: 1
+  replicas: 2
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -27,17 +27,19 @@ spec:
         image: public.ecr.aws/e9y4v9g0/3-tier-backend:latest
         imagePullPolicy: Always
         ports:
-        - containerPort: 3500
+          - containerPort: 3500
         env:
-        - name: MONGO_CONN
-          value: mongodb://$(MONGO_INITDB_ROOT_USERNAME):$(MONGO_INITDB_ROOT_PASSWORD)@mongodb-svc:27017/todo?authSource=admin
+        - name: MONGO_CONN_STR
+          value: "mongodb://mongodb-svc:27017/todo?directConnection=true"
+            #- name: USE_DB_AUTH
+          # value: "true"
 
-        - name: MONGO_INITDB_ROOT_USERNAME
+        - name: MONGO_USERNAME
           valueFrom:
             secretKeyRef:
               name: mongo-secret
               key: username
-        - name: MONGO_INITDB_ROOT_PASSWORD
+        - name: MONGO_PASSWORD
           valueFrom:
             secretKeyRef:
               name: mongo-secret
@@ -45,11 +47,11 @@ spec:
           
         resources:
           requests:
-            cpu: 25m
-            memory: 32Mi
+            cpu: 150m
+            memory: 232Mi
           limits:
-            cpu: 50m
-            memory: 64Mi
+            cpu: 250m
+            memory: 364Mi
         livenessProbe:
           httpGet:
             path: /ok

@@ -4,7 +4,7 @@ metadata:
   name: frontend-deployment
   namespace: workshop
 spec:
-  replicas: 1  #  mtlb replicas 2 ne te pods v 2 honge
+  replicas: 2  #  mtlb replicas 2 ne te pods v 2 honge
   strategy:
     type: RollingUpdate  
     rollingUpdate:    # it updates the pod matlb meri deployment v1 image te chal rhi hai but mai image update krni (image v2) a so i will use rolling update strategy to update the image without downtime
@@ -30,11 +30,11 @@ spec:
         - containerPort: 3000
         resources:
           requests:
-            cpu: 25m
-            memory: 64Mi
-          limits:
             cpu: 50m
-            memory: 128Mi
+            memory: 256Mi
+          limits:
+            cpu: 200m
+            memory: 512Mi
         livenessProbe:
           httpGet:      #Kubernetes sends an HTTP GET request to / on port 3000 to check if the container is alive
             path: /

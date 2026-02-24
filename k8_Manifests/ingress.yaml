@@ -13,19 +13,19 @@ spec:
   - http:
       paths:
       - pathType: Prefix
-        path: "/api"
+        path: /api/tasks
         backend:
           service:
             name: backend-service
             port: 
               number: 3500
       - pathType: Prefix
-        path: "/"
+        path: /
         backend:
           service:
             name: frontend-service
             port: 
-              number: 3000
+              number: 80
 
 
 # kubectl get ingress -n workshop
